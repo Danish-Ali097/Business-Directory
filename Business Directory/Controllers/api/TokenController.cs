@@ -17,22 +17,19 @@ namespace Business_Directory.Controllers.api
         static string KEY = "thisismysecretkeyforauthenticationofuser12345";
         private business_directorydbEntities1 db = new business_directorydbEntities1(); 
         [HttpPost]
-        public Object GetToken(string userName, string password)
+        public Object GetToken(User data)
         {
             bool validuser = false;
-            if (userName.Length < 1 || password.Length < 1) return BadRequest("Credentials can't be empty");
+            if (data.UserName.Length < 1 || data.Password.Length < 1) return BadRequest("Credentials can't be empty");
 
             var res = db.Users.ToList<User>();
             foreach(var x in res)
             {
-                if(x.UserName.Equals(userName) && x.Password.Equals(password))
+                if(x.UserName.Equals(data.UserName) && x.Password.Equals(data.Password))
                 {
                     validuser = true;
                 }
-                else
-                {
-                    return BadRequest("Incorrect Cradentials");
-                }
+                
             }
             if (validuser)
             {
@@ -41,7 +38,7 @@ namespace Business_Directory.Controllers.api
 
                 var permClaim = new Claim[] {
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("UserName",userName)};
+                    new Claim("UserName",data.UserName)};
 
                 var token = new JwtSecurityToken(
                     claims: permClaim,
@@ -51,7 +48,7 @@ namespace Business_Directory.Controllers.api
                 var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
                 return new { auth_token = jwt_token };
             }
-            return BadRequest("An error has occured");
+            return BadRequest("Incorrect Cradentials");
         }
     }
 }

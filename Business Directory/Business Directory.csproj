@@ -407,6 +407,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Home\Signup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

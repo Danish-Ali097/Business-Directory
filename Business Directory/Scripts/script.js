@@ -2,6 +2,7 @@
     $("#locationBtn").click(getCurrentLocation);
     $("#submitBusinessFormBtn").click(addBusiness);
     var html, catresponse;
+    var token = localStorage.getItem("auth_token");
     getDataOnLoad();
 
     function getDataOnLoad() {
@@ -103,6 +104,7 @@
                 type: 'POST',
                 url: '/api/Businesses',
                 contentType: 'application/json;charset=utf-8',
+                headers: { "Authorization": "Bearer "+ token},
                 data: JSON.stringify(obj),
                 dataType: 'json',
                 success: function (response) {
@@ -139,6 +141,7 @@
                 contentType: 'application/json;charset=utf-8',
                 data: JSON.stringify({ BusinessId: uid, Name: category }),
                 dataType: 'json',
+                headers: { "Authorization": "Bearer " + token },
                 success: function (response) {
                     console.log("categories added success");
                     console.log(response);
@@ -164,5 +167,39 @@
         $("#businessList tr").filter(function () {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         })
+    });
+
+    // Login form script
+    $("#LoginForm").on('submit', function (e) {
+        e.preventDefault();
+        var username = $("#userNameLogin").val();
+        var password = $("#passwordLogin").val();
+
+        var obj = { UserName: username, Password: password };
+
+        if (username.length < 1 || password.length < 1) {
+            $(".errorDiv").html(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Please Fill all fields
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`);
+        } else {
+            $.ajax({
+                method: 'POST',
+                url: '/api/Token',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify(obj),
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    localStorage.setItem("auth_token", response.auth_token);
+                    $(this).submit();
+                },
+                error: function (error) {
+                    console.log(error.responseText);
+                }
+            });
+        }
     });
 });

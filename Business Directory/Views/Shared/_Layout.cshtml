@@ -36,11 +36,19 @@
             }
             else
             {
-                <ul class="navbar-nav mr-0"></ul>
+                <ul class="navbar-nav mr-0">
+                    <li class="nav-item">
+                        @Html.ActionLink("Login", "Login", "Home", new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink("Signup", "Signup", "Home", new { @class = "nav-link" })
+                    </li>
+                </ul>
             }
         </div>
     </nav>
     <div class="container body-content">
+        <div class="errorDiv"></div>
         @RenderBody()
         <hr />
         <footer>
